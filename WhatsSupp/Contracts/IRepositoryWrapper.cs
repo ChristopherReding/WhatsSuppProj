@@ -12,6 +12,6 @@ namespace WhatsSupp.Contracts
         ICuisineJxnRepository CuisineJxn { get; }
         IDinerRepository Diner { get; }
         IPotentialMatchRepository PotentialMatch { get; }
-        void Save();
+        Task Save();
     }
 }

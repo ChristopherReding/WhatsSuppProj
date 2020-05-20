@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,8 +24,9 @@ namespace WhatsSupp.Controllers
         // GET: Diners
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _repo.Diner.Include(d => d.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var diner = await _repo.Diner.FindDiner(userId);
+            return View(diner);
         }
 
         // GET: Diners/Details/5
@@ -35,9 +37,7 @@ namespace WhatsSupp.Controllers
                 return NotFound();
             }
 
-            var diner = await _repo.Diner
-                .Include(d => d.IdentityUser)
-                .FirstOrDefaultAsync(m => m.DinerId == id);
+            var diner = await _repo.Diner.FindDinerByDinerId(id);
             if (diner == null)
             {
                 return NotFound();
@@ -49,24 +49,23 @@ namespace WhatsSupp.Controllers
         // GET: Diners/Create
         public IActionResult Create()
         {
-            ViewData["IdentityUserId"] = new SelectList(_repo.Users, "Id", "Id");
             return View();
         }
 
-        // POST: Diners/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Diners/Create        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DinerId,FirstName,LastName,IdentityUserId")] Diner diner)
+        public async Task<IActionResult> Create(Diner diner)
         {
             if (ModelState.IsValid)
             {
-                _repo.Add(diner);
-                await _repo.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                diner.IdentityUserId = userId;
+                _repo.Diner.CreateDiner(diner);
+                await _repo.Save();
+                return RedirectToAction("index");
             }
-            ViewData["IdentityUserId"] = new SelectList(_repo.Users, "Id", "Id", diner.IdentityUserId);
+            
             return View(diner);
         }
 
@@ -78,21 +77,19 @@ namespace WhatsSupp.Controllers
                 return NotFound();
             }
 
-            var diner = await _repo.Diners.FindAsync(id);
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var diner = await _repo.Diner.FindDiner(userId);
             if (diner == null)
             {
                 return NotFound();
             }
-            ViewData["IdentityUserId"] = new SelectList(_repo.Users, "Id", "Id", diner.IdentityUserId);
             return View(diner);
         }
 
         // POST: Diners/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DinerId,FirstName,LastName,IdentityUserId")] Diner diner)
+        public async Task<IActionResult> Edit(int id, Diner diner)
         {
             if (id != diner.DinerId)
             {
@@ -103,8 +100,8 @@ namespace WhatsSupp.Controllers
             {
                 try
                 {
-                    _repo.Update(diner);
-                    await _repo.SaveChangesAsync();
+                    _repo.Diner.EditDiner(diner);
+                    await _repo.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,7 +116,6 @@ namespace WhatsSupp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdentityUserId"] = new SelectList(_repo.Users, "Id", "Id", diner.IdentityUserId);
             return View(diner);
         }
 
@@ -131,9 +127,7 @@ namespace WhatsSupp.Controllers
                 return NotFound();
             }
 
-            var diner = await _repo.Diner
-                .Include(d => d.IdentityUser)
-                .FirstOrDefaultAsync(m => m.DinerId == id);
+            var diner = await _repo.Diner.FindDinerByDinerId(id);                
             if (diner == null)
             {
                 return NotFound();
@@ -147,15 +141,24 @@ namespace WhatsSupp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var diner = await _repo.Diner.FindAsync(id);
-            _repo.Diner.Remove(diner);
+            var diner = await _repo.Diner.FindDinerByDinerId(id);
+            _repo.Diner.DeleteDiner(diner);
             await _repo.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DinerExists(int id)
         {
-            return _repo.Diners.Any(e => e.DinerId == id);
+            try
+            {
+                _repo.Diner.FindDinerByDinerId(id);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
     }
 }

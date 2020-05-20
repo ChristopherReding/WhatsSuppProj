@@ -77,7 +77,7 @@ namespace WhatsSupp
         {
             _context = context;
         }
-        public void Save()
+        public async Task Save()
         {
             _context.SaveChanges();
         }

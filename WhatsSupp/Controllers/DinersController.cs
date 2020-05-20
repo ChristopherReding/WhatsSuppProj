@@ -24,8 +24,12 @@ namespace WhatsSupp.Controllers
         // GET: Diners
         public async Task<IActionResult> Index()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var diner = await _repo.Diner.FindDiner(userId);
+            if(diner == null)
+            {
+                return RedirectToAction("Create");
+            }
             return View(diner);
         }
 

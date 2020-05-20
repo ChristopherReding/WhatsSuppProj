@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 
 #API
-/APIKey.cs
+/WhatsSupp/APIKey.cs

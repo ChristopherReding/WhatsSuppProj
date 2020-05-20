@@ -7,6 +7,6 @@ namespace WhatsSupp
 {
     public static class APIKey
     {
-        public static string googleAPIKey = "";
+        public static string googleAPIKey = "MyAPIKey";
     }
 }

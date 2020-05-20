@@ -11,5 +11,6 @@ namespace WhatsSupp.Models
         [Key]
         public int CuisineId { get; set; }
         public string CuisineName { get; set; }
+        public bool? Selected { get; set; }
     }
 }

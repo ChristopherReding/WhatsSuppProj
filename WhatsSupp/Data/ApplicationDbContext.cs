@@ -31,6 +31,27 @@ namespace WhatsSupp.Data
                         NormalizedName = "DINER"
                     }
                     );
+
+            builder.Entity<Cuisine>()
+                .HasData(
+                new Cuisine { CuisineId = 1, CuisineName = "Mexican" },
+                new Cuisine { CuisineId = 2, CuisineName = "American" },
+                new Cuisine { CuisineId = 3, CuisineName = "Italian" },
+                new Cuisine { CuisineId = 4, CuisineName = "Chinese" },
+                new Cuisine { CuisineId = 5, CuisineName = "Japanese" },
+                new Cuisine { CuisineId = 6, CuisineName = "French" },
+                new Cuisine { CuisineId = 7, CuisineName = "Burgers" },
+                new Cuisine { CuisineId = 8, CuisineName = "Pizza" },
+                new Cuisine { CuisineId = 9, CuisineName = "Bar Food" },
+                new Cuisine { CuisineId = 10, CuisineName = "Indian" },
+                new Cuisine { CuisineId = 11, CuisineName = "Fast Food" },
+                new Cuisine { CuisineId = 12, CuisineName = "Thai" },
+                new Cuisine { CuisineId = 13, CuisineName = "Vietnamese" },
+                new Cuisine { CuisineId = 14, CuisineName = "Breakfast" }
+
+
+                );
+
         }
     }
 }

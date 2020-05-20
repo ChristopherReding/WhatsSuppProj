@@ -349,5 +349,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-#API
-/WhatsSupp/APIKey.cs
+# API keys
+/APIKey.cs

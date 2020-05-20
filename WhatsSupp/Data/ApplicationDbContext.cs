@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WhatsSupp.Models;
 
 namespace WhatsSupp.Data
 {
@@ -13,7 +14,11 @@ namespace WhatsSupp.Data
             : base(options)
         {
         }
-
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Cuisine> Cuisines { get; set; }
+        public DbSet<CuisineJxn> CuisinePreferences { get; set; }
+        public DbSet<Diner> Diners { get; set; }
+        public DbSet<PotentialMatch> PotentialMatches { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -10,6 +10,6 @@ namespace WhatsSupp.Contracts
     {
         void CreatePreference(CuisineJxn preference);
         void RemovePreference(CuisineJxn preference);
-        bool PreferenceExists(Cuisine cuisine, Diner diner);
+        Task<bool> PreferenceExists(Cuisine cuisine, Diner diner);
     }
 }

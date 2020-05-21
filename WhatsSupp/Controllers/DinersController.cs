@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -59,9 +60,26 @@ namespace WhatsSupp.Controllers
             //grab list of all cuisines
             var cuisineIds = await _repo.Cuisine.GetAllCuisineIds();
             dinerCuisineVM.Cuisines = await GetCuisines(cuisineIds);
-
-
             return View(dinerCuisineVM);
+        }    
+
+        // POST: Diners/Create        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(DinerCuisineVM VM)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                VM.Diner.IdentityUserId = userId;
+                _repo.Diner.CreateDiner(VM.Diner);
+                await _repo.Save();
+                await UpdatePreferences(VM.Cuisines, VM.Diner);
+                
+                return View("index");
+            }
+
+            return View();//VM.Diner);
         }
 
         //gets list of cuisines based on a list of cuisine IDs
@@ -75,33 +93,16 @@ namespace WhatsSupp.Controllers
             }
             return cuisines;
         }
-      
 
-        // POST: Diners/Create        
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DinerCuisineVM VM)
-        {
-            if (ModelState.IsValid)
-            {
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                VM.Diner.IdentityUserId = userId;
-                _repo.Diner.CreateDiner(VM.Diner);
-                await UpdatePreferences(VM.Cuisines, VM.Diner);
-                await _repo.Save();
-                return RedirectToAction("index");
-            }
-            
-            return View(VM.Diner);
-        }
-
+        
+        //will update preferences in cuisinejxn db
         public async Task UpdatePreferences(List<Cuisine> cuisines, Diner diner)
         {
             foreach(Cuisine cuisine in cuisines)
             {
                 if (cuisine.Selected == true) 
                 {
-                    if(_repo.CuisineJxn.PreferenceExists(cuisine, diner) == false)
+                    if( await _repo.CuisineJxn.PreferenceExists(cuisine, diner) == false)
                     {
                         CuisineJxn preference = new CuisineJxn();
                         preference.CuisineId = cuisine.CuisineId;
@@ -112,12 +113,16 @@ namespace WhatsSupp.Controllers
                 }
                 else
                 {
-                    if(_repo.CuisineJxn.PreferenceExists(cuisine, diner) == true)
+                    if(await _repo.CuisineJxn.PreferenceExists(cuisine, diner) == true)
                     {
                         var result = await _repo.CuisineJxn.FindByCondition(p => p.CuisineId == cuisine.CuisineId && p.DinerId == diner.DinerId);
-                        CuisineJxn preference = result.SingleOrDefault(); 
-                        _repo.CuisineJxn.RemovePreference(preference);
-                        await _repo.Save();
+                        if(result != null)
+                        {
+                             CuisineJxn preference = result.SingleOrDefault(); 
+                             _repo.CuisineJxn.RemovePreference(preference);
+                             await _repo.Save();
+                        }
+                        
                     }
                 }
             }

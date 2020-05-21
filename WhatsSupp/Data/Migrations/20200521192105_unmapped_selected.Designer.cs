@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WhatsSupp.Data;
 
 namespace WhatsSupp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200521192105_unmapped_selected")]
+    partial class unmapped_selected
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,8 +50,8 @@ namespace WhatsSupp.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e09fc28c-b0eb-4806-95e3-dca5550562b9",
-                            ConcurrencyStamp = "aa874223-f066-4ac0-b556-9614fd8d0ec4",
+                            Id = "f20e8836-ffe4-4a5b-a3db-ee0bd6f97cf5",
+                            ConcurrencyStamp = "51e9c47e-6831-443d-912a-d8151ad60c24",
                             Name = "Diner",
                             NormalizedName = "DINER"
                         });

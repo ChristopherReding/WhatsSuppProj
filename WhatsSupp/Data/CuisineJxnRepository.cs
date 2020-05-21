@@ -15,17 +15,30 @@ namespace WhatsSupp.Data
 
         public void CreatePreference(CuisineJxn preference) => Create(preference);
         public void RemovePreference(CuisineJxn preference) => Delete(preference);
-        public bool PreferenceExists(Cuisine cuisine, Diner diner)
+        public async Task<bool> PreferenceExists(Cuisine cuisine, Diner diner)
         {
-            var result = FindByCondition(p => p.DinerId == diner.DinerId && p.CuisineId == cuisine.CuisineId);
-            if (result != null)
+            try
             {
-                return true;
+                var result = await FindByCondition(p => cuisine.CuisineId == p.CuisineId && diner.DinerId == p.DinerId);
+                var preference = result.SingleOrDefault();
+                if (preference != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch
             {
                 return false;
             }
+            
+                
+          
+
+            
 
         }
     }

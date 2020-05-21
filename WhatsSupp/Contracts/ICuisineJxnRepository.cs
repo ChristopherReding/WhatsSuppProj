@@ -8,5 +8,8 @@ namespace WhatsSupp.Contracts
 {
     public interface ICuisineJxnRepository : IRepositoryBase<CuisineJxn>
     {
+        void CreatePreference(CuisineJxn preference);
+        void RemovePreference(CuisineJxn preference);
+        bool PreferenceExists(Cuisine cuisine, Diner diner);
     }
 }

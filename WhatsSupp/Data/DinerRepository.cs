@@ -34,5 +34,6 @@ namespace WhatsSupp.Data
             var contact = result.SingleOrDefault();
             return contact;
         }
+
     }
 }

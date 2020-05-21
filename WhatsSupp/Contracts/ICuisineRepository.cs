@@ -8,6 +8,6 @@ namespace WhatsSupp.Contracts
 {
     public interface ICuisineRepository : IRepositoryBase<Cuisine>
     {
-        Task<List<Cuisine>> GetAllCuisines();
+        Task<List<int>> GetAllCuisineIds();
     }
 }

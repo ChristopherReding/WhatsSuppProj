@@ -13,10 +13,10 @@ namespace WhatsSupp.Data
         {            
         }
 
-        public async Task<List<Cuisine>> GetAllCuisines()
+        public async Task<List<int>> GetAllCuisineIds()
         {
             var results = await FindAll();
-            var cuisines = results.ToList();
+            var cuisines = results.Select(p => p.CuisineId).ToList();
             return cuisines;
         }
     }

@@ -1,4 +1,4 @@
-﻿@model WhatsSupp.Models.Diner
+﻿@model WhatsSupp.ViewModels.DinerCuisineVM
 
 @{
     ViewData["Title"] = "Create";
@@ -14,16 +14,23 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <label asp-for="Diner.FirstName" class="control-label"></label>
+                <input asp-for="Diner.FirstName" class="form-control" />
+                <span asp-validation-for="Diner.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <label asp-for="Diner.LastName" class="control-label"></label>
+                <input asp-for="Diner.LastName" class="form-control" />
+                <span asp-validation-for="Diner.LastName" class="text-danger"></span>
             </div>
-            
+            @foreach(Cuisine cuisine in Model.Cuisines)
+            {              
+                <div>                    
+                    <input checked="checked" id="@cuisine.Selected" name="@cuisine.CuisineName" type="checkbox" value="true" />
+                    <span>@cuisine.CuisineName</span>
+                </div> 
+                              
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

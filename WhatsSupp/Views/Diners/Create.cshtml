@@ -28,7 +28,6 @@
                
                 <div>                    
                     <input asp-for="@Model.Cuisines[i].Selected" type="checkbox" />
-                    @*<input checked="checked" id="@cuisine.Selected" name="@cuisine.Selected" type="checkbox" value="true" />*@
                     <span>@Model.Cuisines[i].CuisineName</span>
                     <input asp-for="@Model.Cuisines[i].CuisineId" type="hidden" />
                     <input asp-for="@Model.Cuisines[i].CuisineName" type="hidden" />

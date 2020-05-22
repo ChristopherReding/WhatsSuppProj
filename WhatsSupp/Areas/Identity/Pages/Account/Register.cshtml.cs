@@ -111,7 +111,7 @@ namespace WhatsSupp.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction("Create", "Diners", null);
                     }
                 }
                 foreach (var error in result.Errors)

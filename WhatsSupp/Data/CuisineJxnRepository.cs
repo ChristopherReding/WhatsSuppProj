@@ -33,13 +33,27 @@ namespace WhatsSupp.Data
             catch
             {
                 return false;
-            }
-            
-                
-          
-
-            
-
+            }            
         }
+        
+        public async Task<List<Cuisine>> ReflectCuisinePreferences(List<Cuisine> allCuisines, Diner diner)
+        {
+            List<Cuisine> reflectingPreferences = new List<Cuisine>();
+            foreach (Cuisine cuisine in allCuisines)
+            {
+                if(await PreferenceExists(cuisine, diner) == true)
+                {
+                    cuisine.Selected = true;
+                    reflectingPreferences.Add(cuisine);
+                }
+                else
+                {
+                    cuisine.Selected = false;
+                    reflectingPreferences.Add(cuisine);
+                }
+            }
+            return reflectingPreferences;
+        }
+
     }
 }

@@ -143,6 +143,8 @@ namespace WhatsSupp.Controllers
         // GET: Diners/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            DinerCuisineVM dinerCuisineVM = new DinerCuisineVM();
+            //query for user
             if (id == null)
             {
                 return NotFound();
@@ -154,7 +156,16 @@ namespace WhatsSupp.Controllers
             {
                 return NotFound();
             }
-            return View(diner);
+            dinerCuisineVM.Diner = diner;
+
+            //get all cuisines
+            var cuisineIds = await _repo.Cuisine.GetAllCuisineIds();
+            var allCuisines = await GetCuisines(cuisineIds);
+
+            //insert method to check change Selected to True for any existing.
+            dinerCuisineVM.Cuisines = await _repo.CuisineJxn.ReflectCuisinePreferences(allCuisines, diner);
+
+            return View(dinerCuisineVM);
         }
 
         // POST: Diners/Edit/5
@@ -213,9 +224,15 @@ namespace WhatsSupp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var diner = await _repo.Diner.FindDinerByDinerId(id);
+            var preferenceResults = await _repo.CuisineJxn.FindByCondition(p => p.DinerId == id);
+            var cuisinePreferences = preferenceResults.ToList();
+            foreach (CuisineJxn preference in cuisinePreferences)
+            {
+                _repo.CuisineJxn.RemovePreference(preference);
+            }
             _repo.Diner.DeleteDiner(diner);
             await _repo.Save();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("index", "home");
         }
 
         private bool DinerExists(int id)

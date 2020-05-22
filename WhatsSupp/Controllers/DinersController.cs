@@ -171,9 +171,9 @@ namespace WhatsSupp.Controllers
         // POST: Diners/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Diner diner)
+        public async Task<IActionResult> Edit(int id, DinerCuisineVM VM)
         {
-            if (id != diner.DinerId)
+            if (id != VM.Diner.DinerId)
             {
                 return NotFound();
             }
@@ -182,12 +182,13 @@ namespace WhatsSupp.Controllers
             {
                 try
                 {
-                    _repo.Diner.EditDiner(diner);
+                    _repo.Diner.EditDiner(VM.Diner);
+                    await UpdatePreferences(VM.Cuisines, VM.Diner);
                     await _repo.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DinerExists(diner.DinerId))
+                    if (!DinerExists(VM.Diner.DinerId))
                     {
                         return NotFound();
                     }
@@ -196,9 +197,9 @@ namespace WhatsSupp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            return View(diner);
+            return View(VM.Diner);
         }
 
         // GET: Diners/Delete/5
@@ -235,6 +236,52 @@ namespace WhatsSupp.Controllers
             return RedirectToAction("index", "home");
         }
 
+        [HttpGet]
+        public IActionResult Search()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Search(string email)
+        {
+            var person = await _repo.Diner.FindDinerByEmail(email);
+            if(person == null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("ConfirmContact", "Diners", new { id = person.DinerId });
+            }
+        }
+
+        //Get
+        public async Task<IActionResult> ConfirmContact(int id)
+        {
+            var contact = await _repo.Diner.FindDinerByDinerId(id);           
+            return View(contact);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmContact(int? contactId)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var diner = await _repo.Diner.FindDiner(userId);
+            var contact = await _repo.Diner.FindDinerByDinerId(contactId);
+            if (await _repo.Contact.ContactExists(diner, contact) == false)
+            {
+                Contact newContact = new Contact();
+                newContact.Diner1Id = diner.DinerId;
+                newContact.Diner2Id = contact.DinerId;
+                _repo.Contact.CreateContact(newContact);
+                await _repo.Save();
+                return RedirectToAction("index");
+            }
+            
+            return RedirectToAction("index");
+        }
         private bool DinerExists(int id)
         {
             try

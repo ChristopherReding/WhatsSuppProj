@@ -14,6 +14,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Diner.DinerId" />
+            <input type="hidden" asp-for="Diner.IdentityUserId" />
             <div class="form-group">
                 <label asp-for="Diner.FirstName" class="control-label"></label>
                 <input asp-for="Diner.FirstName" class="form-control" />

@@ -8,5 +8,10 @@ namespace WhatsSupp.Contracts
 {
     public interface IContactRepository: IRepositoryBase<Contact>
     {
+        void CreateContact(Contact contact);
+        void RemoveContact(Contact contact);
+
+        Task<bool> ContactExists(Diner diner1, Diner diner2);
+
     }
 }

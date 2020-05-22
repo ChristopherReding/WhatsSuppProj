@@ -13,7 +13,9 @@ namespace WhatsSupp.Models
         public int ContactJxnId { get; set; }
         [ForeignKey("Contact1")]
         public int? Diner1Id { get; set; }
+        public Diner Diner1 { get; set; }
         [ForeignKey("Contact2")]
         public int? Diner2Id { get; set; }
+        public Diner Diner2 { get; set; }
     };
 }

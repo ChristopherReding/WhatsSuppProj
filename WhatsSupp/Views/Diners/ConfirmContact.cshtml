@@ -1,0 +1,30 @@
+﻿@model WhatsSupp.Models.Diner
+@{
+    ViewData["Title"] = "ConfirmContact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ConfirmContact</h1>
+
+<h3>Add this contact?</h3>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+    </dl>
+
+    <form asp-action="ConfirmContact" asp-route-contactId="@Model.DinerId">
+        <input type="submit" value="Confirm" class="btn btn-warning" />
+    </form>
+
+</div>

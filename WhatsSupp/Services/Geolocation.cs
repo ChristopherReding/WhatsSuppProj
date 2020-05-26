@@ -7,5 +7,7 @@ namespace WhatsSupp.Services
 {
     public class Geolocation
     {
+        public double userLatitude { get; set; }
+        public double userLongitude { get; set; }
     }
 }

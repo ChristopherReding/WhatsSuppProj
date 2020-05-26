@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using WhatsSupp.Contracts;
 using WhatsSupp.Data;
 using WhatsSupp.Models;
+using WhatsSupp.Services;
 using WhatsSupp.ViewModels;
 
 namespace WhatsSupp.Controllers
@@ -17,10 +18,15 @@ namespace WhatsSupp.Controllers
     public class DinersController : Controller
     {
         private readonly IRepositoryWrapper _repo;
+        private readonly IGoogleAPIRepository _googleAPI;
+        private readonly IRapidAPIRepository _rapidAPI;
 
-        public DinersController(IRepositoryWrapper repo)
+
+        public DinersController(IRepositoryWrapper repo, IGoogleAPIRepository googleAPI, IRapidAPIRepository rapidAPI)
         {
             _repo = repo;
+            _googleAPI = googleAPI;
+            _rapidAPI = rapidAPI;
         }
 
         // GET: Diners
@@ -32,6 +38,7 @@ namespace WhatsSupp.Controllers
             {
                 return RedirectToAction("Create");
             }
+            
             return View(diner);
         }
 
@@ -231,6 +238,12 @@ namespace WhatsSupp.Controllers
             {
                 _repo.CuisineJxn.RemovePreference(preference);
             }
+            var contactResults = await _repo.Contact.FindByCondition(p => p.Diner1Id == id || p.Diner2Id == id);
+            var contactsToRemove = contactResults.ToList();
+            foreach (Contact contact in contactsToRemove)
+            {
+                _repo.Contact.RemoveContact(contact);
+            }
             _repo.Diner.DeleteDiner(diner);
             await _repo.Save();
             return RedirectToAction("index", "home");
@@ -281,6 +294,17 @@ namespace WhatsSupp.Controllers
             }
             
             return RedirectToAction("index");
+        }
+
+        public async Task<IActionResult> SetupWhatsSupp()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SetUpWhatsSupp()
+        {
+            return View();
+
         }
         private bool DinerExists(int id)
         {

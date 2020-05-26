@@ -55,5 +55,15 @@ namespace WhatsSupp.Data
             return reflectingPreferences;
         }
 
+        public string preferencesAsString(List<Cuisine> preferedCuisines)
+        {
+            string preference = "";
+            foreach(Cuisine cuisine in preferedCuisines)
+            {
+                preference += cuisine.CuisineName;
+            }
+            return preference;
+        }
+
     }
 }

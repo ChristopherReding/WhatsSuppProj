@@ -298,14 +298,55 @@ namespace WhatsSupp.Controllers
 
         public async Task<IActionResult> SetupWhatsSupp()
         {
-            return View();
+            SetUpViewModel setUpViewModel = new SetUpViewModel();
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            setUpViewModel.Diner = await _repo.Diner.FindDiner(userId);
+
+            var contactIds = await _repo.Contact.GetContactIds(setUpViewModel.Diner.DinerId);
+            List<SelectListItem> contacts = new List<SelectListItem>();
+            foreach(int id in contactIds)
+            {
+                var result = await _repo.Diner.FindDinerByDinerId(id);
+                SelectListItem selectListItem = new SelectListItem
+                {
+                    Text = result.FirstName + " " + result.LastName,
+                    Value = result.DinerId.ToString()
+                };
+                contacts.Add(selectListItem);
+            }
+            ViewData["Contacts"] = contacts;
+
+            
+            
+            return View(setUpViewModel);
         }
+
         [HttpPost]
-        public async Task<IActionResult> SetUpWhatsSupp()
+        public async Task<IActionResult> SetUpWhatsSupp(SetUpViewModel setUpViewModel)
         {
-            return View();
+            //get geo coordinates to base search
+            Geolocation coordinates = await _googleAPI.GetGeolocation();
+            //get preferences as a string to insert in the search criteria
+            var cuisineIds = await _repo.Cuisine.GetAllCuisineIds();
+            var allCuisines = await GetCuisines(cuisineIds);
+            var preferedCuisines = await _repo.CuisineJxn.ReflectCuisinePreferences(allCuisines, setUpViewModel.Diner);
+            var preferedCuisineString = _repo.CuisineJxn.preferencesAsString(preferedCuisines);
+
+            double searchRadius = setUpViewModel.searchRadius;
+            //run API call for nearby restaurants
+            setUpViewModel.nearbyRestaurants = await _rapidAPI.GetNearbyRestaurants(coordinates, searchRadius, preferedCuisineString);
+            
+
+            return RedirectToAction("WhatsSuppTonight");
 
         }
+
+        public async Task<IActionResult> WhatsSuppTonight()
+        {
+            return View();
+        }
+
+
         private bool DinerExists(int id)
         {
             try

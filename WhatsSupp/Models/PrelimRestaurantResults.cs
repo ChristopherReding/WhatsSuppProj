@@ -20,7 +20,7 @@ namespace WhatsSupp.Models
         public string RestaurantName { get; set; }
         public int? Rating { get; set; }
         public string RestaurantAddress { get; set; }
-        public DateTime? TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; }
         public string RestaurantId { get; set; }
     }
 }

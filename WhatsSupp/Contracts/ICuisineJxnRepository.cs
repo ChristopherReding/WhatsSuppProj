@@ -12,5 +12,6 @@ namespace WhatsSupp.Contracts
         void RemovePreference(CuisineJxn preference);
         Task<bool> PreferenceExists(Cuisine cuisine, Diner diner);
         Task<List<Cuisine>> ReflectCuisinePreferences(List<Cuisine> allCuisines, Diner diner);
+        string preferencesAsString(List<Cuisine> preferedCuisines);
     }
 }

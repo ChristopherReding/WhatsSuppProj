@@ -31,5 +31,21 @@ namespace WhatsSupp.Data
                 return false;
             }
         }
+
+        public async Task<List<int?>> GetContactIds(int? dinerId)
+        {
+            var results = await FindByCondition(p => p.Diner1Id == dinerId);
+            var contacts1 = results.Select(p => p.Diner2Id).ToList();
+
+            var results2 = await FindByCondition(p => p.Diner2Id == dinerId);
+            var contacts2 = results2.Select(p => p.Diner1Id).ToList();
+
+            foreach (int contactId in contacts2)
+            {
+                contacts1.Add(contactId);
+            }
+            
+            return contacts1;
+        }
     }
 }

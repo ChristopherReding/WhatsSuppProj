@@ -11,7 +11,17 @@ namespace WhatsSupp.Data
     {
         public PotentialMatchesRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
-
         }
+
+        public void CreateMatch(PotentialMatch potentialMatch) => Create(potentialMatch);
+        public void DeleteMatch(PotentialMatch potentialMatch) => Delete(potentialMatch);
+        public async Task<List<PotentialMatch>> GetAllMatches(int? dinerId1, int? dinerId2)
+        {
+            DateTime now = DateTime.Now;
+            var results = await FindByCondition(p => p.Diner1Id == dinerId1 && p.Diner2Id == dinerId2 && p.TimeStamp.DayOfYear == now.DayOfYear);
+            var listOfMatches = results.ToList();
+            return listOfMatches;
+        }
+
     }
 }

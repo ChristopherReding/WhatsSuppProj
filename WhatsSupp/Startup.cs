@@ -16,6 +16,7 @@ using WhatsSupp.Contracts;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using WhatsSupp.ActionFilters;
+using WhatsSupp.Services;
 
 namespace WhatsSupp
 {
@@ -48,6 +49,9 @@ namespace WhatsSupp
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<IGoogleAPIRepository, GoogleAPI>();
+            services.AddScoped<IRapidAPIRepository, RapidAPI>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

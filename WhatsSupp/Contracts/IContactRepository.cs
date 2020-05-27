@@ -12,6 +12,6 @@ namespace WhatsSupp.Contracts
         void RemoveContact(Contact contact);
 
         Task<bool> ContactExists(Diner diner1, Diner diner2);
-
+        Task<List<int?>> GetContactIds(int? dinerId);
     }
 }

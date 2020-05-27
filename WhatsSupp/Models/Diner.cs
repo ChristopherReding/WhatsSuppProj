@@ -15,9 +15,13 @@ namespace WhatsSupp.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         [NotMapped]
-        public Cuisine[] CuisinePreferences { get; set; }
+        public double searchRadius { get; set; }
         [NotMapped]
-        public Diner[] Contacts { get; set; }
+        public int Diner2Id { get; set; }
+        [NotMapped]
+        public List<Cuisine> CuisinePreferences { get; set; }
+        [NotMapped]
+        public IEnumerable<Diner> Contacts { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

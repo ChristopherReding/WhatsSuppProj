@@ -60,8 +60,9 @@ namespace WhatsSupp.Data
             string preference = "";
             foreach(Cuisine cuisine in preferedCuisines)
             {
-                preference += cuisine.CuisineName;
+                preference += cuisine.CuisineName + "+";
             }
+            
             return preference;
         }
 

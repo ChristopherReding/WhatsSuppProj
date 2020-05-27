@@ -1,8 +1,26 @@
-﻿@model WhatsSupp.ViewModels.DinerCuisineVM
+﻿@model WhatsSupp.ViewModels.SetUpViewModel
 @{
     ViewData["Title"] = "SetupWhatsSupp";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>SetupWhatsSupp</h1>
+<h4>Let's get started, we just need a few pieces of information!</h4>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Diners" asp-action="SetUpWhatsSupp">
+            <p>Who are you dining with tonight?</p>
+            <div class="form-group">
+                <select asp-for="Diner2.Diner2Id" class="form-control" asp-items="ViewBag.Contacts"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">How many miles are you willing to travel today?</label>
+                <input asp-for="searchRadius" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="See WhatsSupp!" class="btn btn-primary" />
+            </div>           
+        </form>       
+    </div>
+</div>
 

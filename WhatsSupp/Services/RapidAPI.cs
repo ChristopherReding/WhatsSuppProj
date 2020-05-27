@@ -26,13 +26,11 @@ namespace WhatsSupp.Services
             .header("X-RapidAPI-Host", "us-restaurant-menus.p.rapidapi.com")
             .header("X-RapidAPI-Key", $"{APIKey.rapidAPIKey}")
             .asJsonAsync<NearbyRestaurants>();
-
-            if (response.IsCompletedSuccessfully)
-            {
-                string jsonResult = response.ToString();
-                var restaurantResults = JsonConvert.DeserializeObject<NearbyRestaurants>(jsonResult);
-                return restaurantResults;
-            }
+            
+            string jsonResult = response.Result.ToString();
+            var restaurantResults = JsonConvert.DeserializeObject<NearbyRestaurants>(jsonResult);
+            return restaurantResults;
+            
 
             return null;
 

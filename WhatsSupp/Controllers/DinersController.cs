@@ -335,10 +335,36 @@ namespace WhatsSupp.Controllers
             double searchRadius = setUpViewModel.searchRadius;
             //run API call for nearby restaurants
             setUpViewModel.nearbyRestaurants = await _rapidAPI.GetNearbyRestaurants(coordinates, searchRadius, preferedCuisineString);
-            
 
+            await AddSearchToDb(setUpViewModel.nearbyRestaurants, setUpViewModel.Diner.DinerId, setUpViewModel.Diner2.DinerId);
             return RedirectToAction("WhatsSuppTonight");
 
+        }
+
+        public async Task AddSearchToDb(NearbyRestaurants nearbyRestaurants, int diner1Id, int diner2Id)
+        {
+            for (int i = 0; i < nearbyRestaurants.result.data.Length; i++)
+            {
+                PotentialMatch potentialMatch = new PotentialMatch();
+                potentialMatch.Diner1Id = diner1Id;
+                potentialMatch.Diner2Id = diner2Id;
+                potentialMatch.RestaurantName = nearbyRestaurants.result.data[i].restaurant_name;
+                potentialMatch.RestaurantAddress = nearbyRestaurants.result.data[i].address.formatted;
+                potentialMatch.RestaurantId = nearbyRestaurants.result.data[i].restaurant_id;
+                potentialMatch.PriceRange = nearbyRestaurants.result.data[i].price_range;
+                potentialMatch.PhoneNumber = nearbyRestaurants.result.data[i].restaurant_phone;
+
+                string cuisines = "";
+                for (int j = 0; j < nearbyRestaurants.result.data[i].cuisines.Length; j++)
+                {
+                    cuisines += $"{nearbyRestaurants.result.data[i].cuisines[j]} ";
+                }
+
+                potentialMatch.Cuisines = cuisines;
+                potentialMatch.TimeStamp = DateTime.Now;
+                _repo.PotentialMatch.CreateMatch(potentialMatch);
+                await _repo.Save();
+            }
         }
 
         public async Task<IActionResult> WhatsSuppTonight()

@@ -15,27 +15,22 @@ namespace WhatsSupp.Services
         {
         }
 
+        public async Task<T> Get<T>(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.TryAddWithoutValidation("X-RapidAPI-Host", "us-restaurant-menus.p.rapidapi.com");
+                client.DefaultRequestHeaders.TryAddWithoutValidation("X-RapidAPI-Key", $"{APIKey.rapidAPIKey}");
+                var json = await client.GetStringAsync(url);
+                return JsonConvert.DeserializeObject<T>(json);
+            }
+        }
+
         public async Task<NearbyRestaurants> GetNearbyRestaurants(Geolocation coordinates, double searchRadius, string preferences)
         {
-            //HttpClient client = new HttpClient();
-            //HttpResponseMessage response = await client.GetAsync($"https://us-restaurant-menus.p.rapidapi.com/restaurants/search?distance={searchRadius}&lat={coordinates.userLatitude}&page=1&lon={coordinates.userLongitude}&q={preferences}")
-            //.header("X-RapidAPI-Host", "us-restaurant-menus.p.rapidapi.com")
-            //.header("X-RapidAPI-Key", $"{APIKey.rapidAPIKey}");
-
-            Task<HttpResponse<NearbyRestaurants>> response = Unirest.get($"https://us-restaurant-menus.p.rapidapi.com/restaurants/search?distance={searchRadius}&lat={coordinates.userLatitude}&page=1&lon={coordinates.userLongitude}&q={preferences}")
-            .header("X-RapidAPI-Host", "us-restaurant-menus.p.rapidapi.com")
-            .header("X-RapidAPI-Key", $"{APIKey.rapidAPIKey}")
-            .asJsonAsync<NearbyRestaurants>();
-            
-            string jsonResult = response.Result.ToString();
-            var restaurantResults = JsonConvert.DeserializeObject<NearbyRestaurants>(jsonResult);
-            return restaurantResults;
-            
-
-            return null;
-
-
-
+            string url = ($"https://us-restaurant-menus.p.rapidapi.com/restaurants/search?distance={searchRadius}&lat={coordinates.userLatitude}&page=1&lon={coordinates.userLongitude}&q={preferences}");
+            var result = await Get<NearbyRestaurants>(url);
+            return result;
         }
     }
 }

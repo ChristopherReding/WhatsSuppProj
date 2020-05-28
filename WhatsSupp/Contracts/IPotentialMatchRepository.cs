@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WhatsSupp.Models;
+using WhatsSupp.Services;
 
 namespace WhatsSupp.Contracts
 {
@@ -12,5 +13,6 @@ namespace WhatsSupp.Contracts
         void DeleteMatch(PotentialMatch potentialMatch);
 
         Task<List<PotentialMatch>> GetAllMatches(int? dinerId1, int? dinerId2);
+        
     }
 }

@@ -20,11 +20,12 @@ namespace WhatsSupp.Models
         public int Diner2Id { get; set; }
         public Diner Diner2 { get; set; }
 
-        public string RestaurantName { get; set; }
-        public int? Rating { get; set; }
+        public string RestaurantName { get; set; }        
         public string RestaurantAddress { get; set; }
         public DateTime TimeStamp { get; set; }
-        public string RestaurantId { get; set; }
-
+        public int RestaurantId { get; set; }
+        public string PriceRange { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Cuisines { get; set; }
     }
 }

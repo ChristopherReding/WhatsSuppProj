@@ -27,5 +27,7 @@ namespace WhatsSupp.Models
         public string PriceRange { get; set; }
         public string PhoneNumber { get; set; }
         public string Cuisines { get; set; }
+        public bool? Diner1Approved { get; set; }
+        public bool? Diner2Approved { get; set; }
     }
 }

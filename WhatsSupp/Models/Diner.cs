@@ -21,7 +21,7 @@ namespace WhatsSupp.Models
         [NotMapped]
         public List<Cuisine> CuisinePreferences { get; set; }
         [NotMapped]
-        public IEnumerable<Diner> Contacts { get; set; }
+        public List<Diner> Contacts { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

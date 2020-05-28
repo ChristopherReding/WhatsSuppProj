@@ -38,7 +38,14 @@ namespace WhatsSupp.Controllers
             {
                 return RedirectToAction("Create");
             }
-            
+            var allContactIds = await _repo.Contact.GetContactIds(diner.DinerId);
+            List<Diner> contacts = new List<Diner>();
+            foreach (int contactId in allContactIds)
+            {
+                var contact = await _repo.Diner.FindDinerByDinerId(contactId);
+                contacts.Add(contact);
+            }
+            diner.Contacts = contacts;
             return View(diner);
         }
 
@@ -376,7 +383,7 @@ namespace WhatsSupp.Controllers
             //get a match to display
             try
             {
-                seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneMatch(seeWhatsSuppVM.Diner.DinerId);
+                seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneToMatch(seeWhatsSuppVM.Diner.DinerId);
             }
             catch
             {
@@ -397,11 +404,52 @@ namespace WhatsSupp.Controllers
                 _repo.PotentialMatch.DeleteMatch(seeWhatsSuppVM.PotentialMatch);
                 await _repo.Save();
             }
-
+            else if (seeWhatsSuppVM.Chosen == true)
+            {
+                seeWhatsSuppVM.PotentialMatch.Diner1Approved = true;
+                await _repo.Save();
+            }
             return View();
 
         }
 
+        public async Task<IActionResult> ElseWhatsSuppTonight(int? dinerId)
+        {
+            SeeWhatsSuppVM seeWhatsSuppVM = new SeeWhatsSuppVM();
+            //get diner2 (user)
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            seeWhatsSuppVM.Diner2 = await _repo.Diner.FindDiner(userId);
+            //get diner1 (who started the WhatsSupp)
+            seeWhatsSuppVM.Diner = await _repo.Diner.FindDinerByDinerId(dinerId);                      
+            //get a match to display
+            try
+            {
+                seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneToMatch(seeWhatsSuppVM.Diner.DinerId, seeWhatsSuppVM.Diner.Diner2Id);
+            }
+            catch
+            {
+                return RedirectToAction("index");
+            }
+
+            return View(seeWhatsSuppVM);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ElseWhatsSuppTonight(SeeWhatsSuppVM seeWhatsSuppVM)
+        {
+            if (seeWhatsSuppVM.Chosen == false)
+            {
+                _repo.PotentialMatch.DeleteMatch(seeWhatsSuppVM.PotentialMatch);
+                await _repo.Save();
+            }
+            else if(seeWhatsSuppVM.Chosen == true)
+            {
+                seeWhatsSuppVM.PotentialMatch.Diner2Approved = true;
+                await _repo.Save();
+            }
+
+            return View();
+
+        }
         private bool DinerExists(int id)
         {
             try

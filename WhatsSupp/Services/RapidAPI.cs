@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using unirest_net.http;
 using WhatsSupp.Contracts;
+using WhatsSupp.RootObjects;
 
 namespace WhatsSupp.Services
 {
@@ -30,6 +31,13 @@ namespace WhatsSupp.Services
         {
             string url = ($"https://us-restaurant-menus.p.rapidapi.com/restaurants/search?distance={searchRadius}&lat={coordinates.userLatitude}&page=1&lon={coordinates.userLongitude}&q={preferences}");
             var result = await Get<NearbyRestaurants>(url);
+            return result;
+        }
+
+        public async Task<Menu> GetMenu(int restaurantId, int page)
+        {
+            string url = ($"https://us-restaurant-menus.p.rapidapi.com/restaurant/{restaurantId}/menuitems?page={page}");
+            var result = await Get<Menu>(url);
             return result;
         }
     }

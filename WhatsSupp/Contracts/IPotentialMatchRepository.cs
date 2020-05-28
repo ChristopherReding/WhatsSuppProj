@@ -14,7 +14,7 @@ namespace WhatsSupp.Contracts
 
         
         Task<List<PotentialMatch>> GetAllMatches(int? dinerId1, int? dinerId2);
-        Task<PotentialMatch> GetOneMatch(int? dinerId1);
-        Task<PotentialMatch> GetOneMatch(int? dinerId1, int? dinerId2);
+        Task<PotentialMatch> GetOneToMatch(int? dinerId1);
+        Task<PotentialMatch> GetOneToMatch(int? dinerId1, int? dinerId2);
     }
 }

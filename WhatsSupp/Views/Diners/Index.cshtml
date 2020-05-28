@@ -5,11 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Hi, @Model.FirstName @Model.LastName!</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div>
+    <a class="btn-primary" asp-action="SetupWhatsSupp">
+        <button type="button" class="btn btn-primary">Let's Get Started</button>
+    </a>
+    
+</div>
+<div class="row">
+   <div class="col-8"></div>
+
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -18,13 +27,18 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LastName)
+            </th>           
+            <th>
+                @Html.DisplayNameFor(model => model.Contacts)
             </th>
-           
-            <th></th>
         </tr>
     </thead>
     <tbody>
-
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
         
 
     </tbody>

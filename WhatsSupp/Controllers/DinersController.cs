@@ -337,7 +337,7 @@ namespace WhatsSupp.Controllers
             setUpViewModel.nearbyRestaurants = await _rapidAPI.GetNearbyRestaurants(coordinates, searchRadius, preferedCuisineString);
 
             await AddSearchToDb(setUpViewModel.nearbyRestaurants, setUpViewModel.Diner.DinerId, setUpViewModel.Diner2.DinerId);
-            return RedirectToAction("WhatsSuppTonight");
+            return RedirectToAction("MyWhatsSuppTonight");
 
         }
 
@@ -367,11 +367,40 @@ namespace WhatsSupp.Controllers
             }
         }
 
-        public async Task<IActionResult> WhatsSuppTonight()
+        public async Task<IActionResult> MyWhatsSuppTonight()
         {
-            return View();
+            SeeWhatsSuppVM seeWhatsSuppVM = new SeeWhatsSuppVM();
+            //get diner1
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            seeWhatsSuppVM.Diner = await _repo.Diner.FindDiner(userId);
+            //get a match to display
+            try
+            {
+                seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneMatch(seeWhatsSuppVM.Diner.DinerId);
+            }
+            catch
+            {
+                return RedirectToAction("index");
+            }
+            
+            //get diner2
+            seeWhatsSuppVM.Diner2 = await _repo.Diner.FindDinerByDinerId(seeWhatsSuppVM.PotentialMatch.Diner2Id);
+            //return view with VM
+            return View(seeWhatsSuppVM);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> MyWhatsSuppTonight(SeeWhatsSuppVM seeWhatsSuppVM)
+        {
+            if (seeWhatsSuppVM.Chosen == false)
+            {
+                _repo.PotentialMatch.DeleteMatch(seeWhatsSuppVM.PotentialMatch);
+                await _repo.Save();
+            }
+
+            return View();
+
+        }
 
         private bool DinerExists(int id)
         {

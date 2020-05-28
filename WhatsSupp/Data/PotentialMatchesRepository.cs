@@ -23,8 +23,22 @@ namespace WhatsSupp.Data
             var listOfMatches = results.ToList();
             return listOfMatches;
         }
-                  
         
+        public async Task<PotentialMatch> GetOneMatch(int? dinerId1)
+        {
+            DateTime now = DateTime.Now;
+            var results = await FindByCondition(p => p.Diner1Id == dinerId1 && p.TimeStamp.DayOfYear == now.DayOfYear);
+            var match = results.FirstOrDefault();
+            return match;
+        }
+        public async Task<PotentialMatch> GetOneMatch(int? dinerId1, int? dinerId2)
+        {
+            DateTime now = DateTime.Now;
+            var results = await FindByCondition(p => p.Diner1Id == dinerId1 && p.Diner2Id == dinerId2 && p.TimeStamp.DayOfYear == now.DayOfYear);
+            var match = results.FirstOrDefault();
+            return match;
+        }
+
 
     }
 }

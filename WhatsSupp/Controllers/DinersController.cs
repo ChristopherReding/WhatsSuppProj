@@ -380,36 +380,39 @@ namespace WhatsSupp.Controllers
             //get diner1
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             seeWhatsSuppVM.Diner = await _repo.Diner.FindDiner(userId);
-            //get a match to display
-            try
-            {
-                seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneToMatch(seeWhatsSuppVM.Diner.DinerId);
-            }
-            catch
+            //get an option to display
+            seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneToMatch(seeWhatsSuppVM.Diner.DinerId);
+            if(seeWhatsSuppVM.PotentialMatch == null)
             {
                 return RedirectToAction("index");
-            }
-            
+            };
+
             //get diner2
             seeWhatsSuppVM.Diner2 = await _repo.Diner.FindDinerByDinerId(seeWhatsSuppVM.PotentialMatch.Diner2Id);
+
+            var results = await _repo.PotentialMatch.GetAllMatches(seeWhatsSuppVM.Diner.DinerId, seeWhatsSuppVM.Diner2.DinerId);
+            seeWhatsSuppVM.Matches = results.ToList();
             //return view with VM
             return View(seeWhatsSuppVM);
         }
 
         [HttpPost]
-        public async Task<IActionResult> MyWhatsSuppTonight(SeeWhatsSuppVM seeWhatsSuppVM)
+        public async Task<IActionResult> MyWhatsSuppTonight(int? matchId, bool chosen)
         {
-            if (seeWhatsSuppVM.Chosen == false)
+            var potentialMatch = await _repo.PotentialMatch.FindPotentialMatchByMatchId(matchId);
+
+            if (chosen == false)
             {
-                _repo.PotentialMatch.DeleteMatch(seeWhatsSuppVM.PotentialMatch);
+                _repo.PotentialMatch.DeleteMatch(potentialMatch);
                 await _repo.Save();
             }
-            else if (seeWhatsSuppVM.Chosen == true)
+            else if (chosen == true)
             {
-                seeWhatsSuppVM.PotentialMatch.Diner1Approved = true;
+                potentialMatch.Diner1Approved = true;
+                _repo.PotentialMatch.UpdateMatch(potentialMatch);
                 await _repo.Save();
             }
-            return View();
+            return RedirectToAction("MyWhatsSuppTonight");
 
         }
 
@@ -422,33 +425,50 @@ namespace WhatsSupp.Controllers
             //get diner1 (who started the WhatsSupp)
             seeWhatsSuppVM.Diner = await _repo.Diner.FindDinerByDinerId(dinerId);                      
             //get a match to display
-            try
-            {
-                seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneToMatch(seeWhatsSuppVM.Diner.DinerId, seeWhatsSuppVM.Diner.Diner2Id);
-            }
-            catch
+            seeWhatsSuppVM.PotentialMatch = await _repo.PotentialMatch.GetOneToMatch(seeWhatsSuppVM.Diner.DinerId, seeWhatsSuppVM.Diner2.DinerId);
+            if(seeWhatsSuppVM.PotentialMatch == null)
             {
                 return RedirectToAction("index");
-            }
+            };
+            var results = await _repo.PotentialMatch.GetAllMatches(seeWhatsSuppVM.Diner.DinerId, seeWhatsSuppVM.Diner2.DinerId);
+            seeWhatsSuppVM.Matches = results.ToList();
 
             return View(seeWhatsSuppVM);
         }
         [HttpPost]
-        public async Task<IActionResult> ElseWhatsSuppTonight(SeeWhatsSuppVM seeWhatsSuppVM)
+        public async Task<IActionResult> ElseWhatsSuppTonight(int? matchId, bool chosen)
         {
-            if (seeWhatsSuppVM.Chosen == false)
+            var potentialMatch = await _repo.PotentialMatch.FindPotentialMatchByMatchId(matchId);
+
+            if (chosen == false)
             {
-                _repo.PotentialMatch.DeleteMatch(seeWhatsSuppVM.PotentialMatch);
+                _repo.PotentialMatch.DeleteMatch(potentialMatch);
                 await _repo.Save();
             }
-            else if(seeWhatsSuppVM.Chosen == true)
+            else if (chosen == true)
             {
-                seeWhatsSuppVM.PotentialMatch.Diner2Approved = true;
+                potentialMatch.Diner2Approved = true;
+                _repo.PotentialMatch.UpdateMatch(potentialMatch);
                 await _repo.Save();
             }
+            return RedirectToAction("ElseWhatsSuppTonight", "Diners", new { dinerId = potentialMatch.Diner1Id });
 
-            return View();
+        }
 
+        public async Task<IActionResult> ChooseAWhatsSupp()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var diner = await _repo.Diner.FindDiner(userId);
+
+            var contactIds = await _repo.Contact.GetContactIds(diner.DinerId);
+            List<Diner> contacts = new List<Diner>();
+            foreach (int id in contactIds)
+            {
+                var result = await _repo.Diner.FindDinerByDinerId(id);
+                contacts.Add(result);
+            }
+            diner.Contacts = contacts;
+            return View(diner);
         }
         private bool DinerExists(int id)
         {

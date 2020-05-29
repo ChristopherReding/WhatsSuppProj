@@ -12,9 +12,12 @@ namespace WhatsSupp.Contracts
         void CreateMatch(PotentialMatch potentialMatch);
         void DeleteMatch(PotentialMatch potentialMatch);
 
-        
+        void UpdateMatch(PotentialMatch potentialMatch);
+
+
         Task<List<PotentialMatch>> GetAllMatches(int? dinerId1, int? dinerId2);
         Task<PotentialMatch> GetOneToMatch(int? dinerId1);
         Task<PotentialMatch> GetOneToMatch(int? dinerId1, int? dinerId2);
+        Task<PotentialMatch> FindPotentialMatchByMatchId(int? matchId);
     }
 }

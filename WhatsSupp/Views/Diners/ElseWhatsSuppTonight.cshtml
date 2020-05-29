@@ -1,8 +1,52 @@
-﻿
+﻿@model WhatsSupp.ViewModels.SeeWhatsSuppVM
+
 @{
     ViewData["Title"] = "ElseWhatsSuppTonight";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ElseWhatsSuppTonight</h1>
+<h1>Is This WhatsSupp Tonight?</h1>
+
+<div>
+    <div class="row">
+        <div class="col-8" style="border-style: double; border-color: grey; border-width: medium">
+            <div>
+                <span>
+                    <h4>@Html.DisplayFor(model => model.PotentialMatch.RestaurantName)</h4>
+                </span>
+                @*<span>
+                        <a asp-action="RestaurantDetails" asp-route-id="@Model.PotentialMatch.RestaurantId">
+                            | Restaurant Details |
+                        </a>
+                    </span>
+                    <span>
+                        <a asp-action="RestaurantMenu" asp-route-id="@Model.PotentialMatch.RestaurantId">
+                            See Menu |
+                        </a>
+                    </span>*@
+            </div>
+            <form action="MyWhatsSuppTonight" method="post">
+                <div>
+                    <button type="submit" class="btn-primary" asp-route-chosen="true" asp-route-matchId="@Model.PotentialMatch.MatchId">
+                        That's WhatsSupp!
+                    </button>
+                    <button type="submit" class="btn-primary" asp-route-chosen="false" asp-route-matchId="@Model.PotentialMatch.MatchId">
+                        Not Today
+                    </button>
+
+                </div>
+            </form>
+
+        </div>
+        <div class="col-4" style="border-style: double; border-color: grey; border-width: medium">
+            <h4>Tonight's Options with @Model.Diner.FirstName</h4>
+            @foreach (PotentialMatch match in Model.Matches)
+            {
+                <div>@match.RestaurantName</div>
+            }
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index">Back Home</a>
+    </div>
 

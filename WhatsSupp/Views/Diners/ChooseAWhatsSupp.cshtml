@@ -1,0 +1,15 @@
+﻿@model WhatsSupp.Models.Diner
+@{
+    ViewData["Title"] = "ChooseAWhatsSupp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Who wants to know WhatsSupp?</h1>
+<div>
+    <a asp-action="MyWhatsSuppTonight">Me!</a>
+</div>
+@foreach(Diner contact in Model.Contacts)
+{
+    <div><a asp-action="ElseWhatsSuppTonight" asp-route-dinerId="@contact.DinerId">@contact.FirstName @contact.LastName</a></div>
+}
+

@@ -12,5 +12,6 @@ namespace WhatsSupp.ViewModels
         public Diner Diner2 { get; set; }
         public PotentialMatch PotentialMatch {get;set;}
         public bool Chosen { get; set; }
+        public List<PotentialMatch> Matches { get; set; }
     }
 }

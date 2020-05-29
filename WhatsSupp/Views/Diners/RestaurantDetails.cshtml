@@ -1,0 +1,85 @@
+﻿@model WhatsSupp.Models.PotentialMatch
+
+@{
+    ViewData["Title"] = "RestaurantDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>RestaurantDetails</h1>
+
+<div>
+    <h4>PotentialMatch</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Diner1)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Diner1.DinerId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Diner2)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Diner2.DinerId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RestaurantName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RestaurantName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RestaurantAddress)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RestaurantAddress)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RestaurantId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RestaurantId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PriceRange)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PriceRange)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Cuisines)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Cuisines)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Diner1Approved)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Diner1Approved)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Diner2Approved)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Diner2Approved)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.MatchId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

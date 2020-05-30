@@ -13,5 +13,6 @@ namespace WhatsSupp.Contracts
         Task<bool> PreferenceExists(Cuisine cuisine, Diner diner);
         Task<List<Cuisine>> ReflectCuisinePreferences(List<Cuisine> allCuisines, Diner diner);
         string preferencesAsString(List<Cuisine> preferedCuisines);
+        Task<List<Cuisine>> GetListOfCuisinePreferences(List<Cuisine> allCuisines, Diner diner);
     }
 }

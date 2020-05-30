@@ -331,12 +331,13 @@ namespace WhatsSupp.Controllers
         [HttpPost]
         public async Task<IActionResult> SetUpWhatsSupp(SetUpViewModel setUpViewModel)
         {
+            await ClearTodaysPreviousWhatsSupp(setUpViewModel.Diner.DinerId);
             //get geo coordinates to base search
             Geolocation coordinates = await _googleAPI.GetGeolocation();
             //get preferences as a string to insert in the search criteria
             var cuisineIds = await _repo.Cuisine.GetAllCuisineIds();
             var allCuisines = await GetCuisines(cuisineIds);
-            var preferedCuisines = await _repo.CuisineJxn.ReflectCuisinePreferences(allCuisines, setUpViewModel.Diner);
+            var preferedCuisines = await _repo.CuisineJxn.GetListOfCuisinePreferences(allCuisines, setUpViewModel.Diner);
             var preferedCuisineString = _repo.CuisineJxn.preferencesAsString(preferedCuisines);
 
             double searchRadius = setUpViewModel.searchRadius;
@@ -373,7 +374,20 @@ namespace WhatsSupp.Controllers
                 await _repo.Save();
             }
         }
+        public async Task ClearTodaysPreviousWhatsSupp(int? dinerId)
+        {
+            var result = await _repo.PotentialMatch.GetAllTodaysPotentialMatches(dinerId);
+            if(result.Count > 0)
+            {
+                foreach(PotentialMatch potentialMatch in result)
+                {
+                    _repo.PotentialMatch.DeleteMatch(potentialMatch);
+                    await _repo.Save();
+                }
 
+            }
+            
+        } 
         public async Task<IActionResult> MyWhatsSuppTonight()
         {
             SeeWhatsSuppVM seeWhatsSuppVM = new SeeWhatsSuppVM();
@@ -455,6 +469,14 @@ namespace WhatsSupp.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RestaurantDetails(int restaurantId)
+        {
+            var restaurant = await _repo.PotentialMatch.FindPotentialMatchByRestaurantId(restaurantId);            
+            return View(restaurant);
+        }
+
+
         public async Task<IActionResult> ChooseAWhatsSupp()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -470,6 +492,7 @@ namespace WhatsSupp.Controllers
             diner.Contacts = contacts;
             return View(diner);
         }
+
         private bool DinerExists(int id)
         {
             try

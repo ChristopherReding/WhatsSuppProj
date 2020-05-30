@@ -54,6 +54,20 @@ namespace WhatsSupp.Data
             }
             return reflectingPreferences;
         }
+        public async Task<List<Cuisine>> GetListOfCuisinePreferences(List<Cuisine> allCuisines, Diner diner)
+        {
+            List<Cuisine> preferences = new List<Cuisine>();
+            foreach (Cuisine cuisine in allCuisines)
+            {
+                if (await PreferenceExists(cuisine, diner) == true)
+                {
+                    cuisine.Selected = true;
+                    preferences.Add(cuisine);
+                }
+                
+            }
+            return preferences;
+        }
 
         public string preferencesAsString(List<Cuisine> preferedCuisines)
         {

@@ -17,6 +17,13 @@ namespace WhatsSupp.Data
         public void CreateMatch(PotentialMatch potentialMatch) => Create(potentialMatch);
         public void DeleteMatch(PotentialMatch potentialMatch) => Delete(potentialMatch);
         public void UpdateMatch(PotentialMatch potentialMatch) => Update(potentialMatch);
+        public async Task<List<PotentialMatch>> GetAllTodaysPotentialMatches(int? dinerId1)
+        {
+            DateTime now = DateTime.Now;
+            var results = await FindByCondition(p => p.Diner1Id == dinerId1 && p.TimeStamp.DayOfYear == now.DayOfYear);
+            var listOfMatches = results.ToList();
+            return listOfMatches;
+        }
         public async Task<List<PotentialMatch>> GetAllMatches(int? dinerId1, int? dinerId2)
         {
             DateTime now = DateTime.Now;
@@ -47,5 +54,11 @@ namespace WhatsSupp.Data
             return match;
         }
 
+        public async Task<PotentialMatch> FindPotentialMatchByRestaurantId(int? restaurantId)
+        {
+            var results = await FindByCondition(p => p.RestaurantId == restaurantId);
+            var restaurant = results.FirstOrDefault();
+            return restaurant;
+        }
     }
 }

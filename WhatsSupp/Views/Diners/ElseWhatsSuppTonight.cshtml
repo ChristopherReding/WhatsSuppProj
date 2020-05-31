@@ -14,12 +14,12 @@
                 <span>
                     <h4>@Html.DisplayFor(model => model.PotentialMatch.RestaurantName)</h4>
                 </span>
-                @*<span>
-                        <a asp-action="RestaurantDetails" asp-route-id="@Model.PotentialMatch.RestaurantId">
-                            | Restaurant Details |
-                        </a>
-                    </span>
-                    <span>
+                <span>
+                    <a asp-action="RestaurantDetails" asp-route-restaurantId="@Model.PotentialMatch.RestaurantId" target="_blank">
+                        | Restaurant Info |
+                    </a>
+                </span>
+                    @*<span>
                         <a asp-action="RestaurantMenu" asp-route-id="@Model.PotentialMatch.RestaurantId">
                             See Menu |
                         </a>

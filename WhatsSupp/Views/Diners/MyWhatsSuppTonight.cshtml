@@ -19,6 +19,11 @@
                         | Restaurant Info |
                     </a>
                 </span>
+                <span>
+                    <a asp-action="Menu" asp-route-restaurantId="@Model.PotentialMatch.RestaurantId" target="_blank">
+                        View Menu |
+                    </a>
+                </span>
                     @*<span>
                         <a asp-action="RestaurantMenu" asp-route-id="@Model.PotentialMatch.RestaurantId">
                             See Menu |

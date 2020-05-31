@@ -17,10 +17,10 @@ namespace WhatsSupp.Data
         public void CreateMatch(PotentialMatch potentialMatch) => Create(potentialMatch);
         public void DeleteMatch(PotentialMatch potentialMatch) => Delete(potentialMatch);
         public void UpdateMatch(PotentialMatch potentialMatch) => Update(potentialMatch);
-        public async Task<List<PotentialMatch>> GetAllTodaysPotentialMatches(int? dinerId1)
+        public async Task<List<PotentialMatch>> GetAllPriorPotentialMatches(int? dinerId)
         {
-            DateTime now = DateTime.Now;
-            var results = await FindByCondition(p => p.Diner1Id == dinerId1 && p.TimeStamp.DayOfYear == now.DayOfYear);
+            
+            var results = await FindByCondition(p => p.Diner1Id == dinerId);
             var listOfMatches = results.ToList();
             return listOfMatches;
         }

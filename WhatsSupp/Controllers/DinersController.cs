@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using WhatsSupp.Contracts;
 using WhatsSupp.Data;
 using WhatsSupp.Models;
+using WhatsSupp.RootObjects;
 using WhatsSupp.Services;
 using WhatsSupp.ViewModels;
 
@@ -331,7 +332,7 @@ namespace WhatsSupp.Controllers
         [HttpPost]
         public async Task<IActionResult> SetUpWhatsSupp(SetUpViewModel setUpViewModel)
         {
-            await ClearTodaysPreviousWhatsSupp(setUpViewModel.Diner.DinerId);
+            await ClearPreviousWhatsSupp(setUpViewModel.Diner.DinerId);
             //get geo coordinates to base search
             Geolocation coordinates = await _googleAPI.GetGeolocation();
             //get preferences as a string to insert in the search criteria
@@ -374,9 +375,9 @@ namespace WhatsSupp.Controllers
                 await _repo.Save();
             }
         }
-        public async Task ClearTodaysPreviousWhatsSupp(int? dinerId)
+        public async Task ClearPreviousWhatsSupp(int? dinerId)
         {
-            var result = await _repo.PotentialMatch.GetAllTodaysPotentialMatches(dinerId);
+            var result = await _repo.PotentialMatch.GetAllPriorPotentialMatches(dinerId);
             if(result.Count > 0)
             {
                 foreach(PotentialMatch potentialMatch in result)
@@ -476,6 +477,32 @@ namespace WhatsSupp.Controllers
             return View(restaurant);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Menu(int restaurantId)
+        {
+            FullMenuVM fullMenuVM = new FullMenuVM();
+            fullMenuVM.AllMenuPages = new List<Menu>();
+            int i = 1;
+            bool morePages;
+            do
+            {               
+                var result = await _rapidAPI.GetMenu(restaurantId, i);                
+                fullMenuVM.AllMenuPages.Add(result);
+                morePages = result.result.morePages;
+                i++;
+            }
+            while (morePages);
+
+            if(fullMenuVM.AllMenuPages.Count > 0)
+            {
+                return View(fullMenuVM);
+            }
+            else
+            {
+                return RedirectToAction("NoMenu");
+            }
+            
+        }
 
         public async Task<IActionResult> ChooseAWhatsSupp()
         {

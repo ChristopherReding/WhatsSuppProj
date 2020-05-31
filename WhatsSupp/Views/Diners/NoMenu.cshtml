@@ -1,8 +1,8 @@
-﻿@model WhatsSupp.ViewModels.FullMenuVM
+﻿@model WhatsSupp.Models.PotentialMatch
 @{
     ViewData["Title"] = "NoMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Sorr, No Menu Items Found</h1>
+<h1>Sorry, No Menu Items Found for @Model.RestaurantName</h1>
 

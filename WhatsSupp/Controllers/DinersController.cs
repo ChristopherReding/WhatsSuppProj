@@ -91,7 +91,7 @@ namespace WhatsSupp.Controllers
                 await _repo.Save();
                 await UpdatePreferences(VM.Cuisines, VM.Diner);
                 
-                return View("index");
+                return RedirectToAction("index");
             }
 
             return View();//VM.Diner);
@@ -493,15 +493,21 @@ namespace WhatsSupp.Controllers
             }
             while (morePages);
 
-            if(fullMenuVM.AllMenuPages.Count > 0)
+            if(fullMenuVM.AllMenuPages[0].result.totalResults > 0)
             {
                 return View(fullMenuVM);
             }
             else
             {
-                return RedirectToAction("NoMenu");
+                return RedirectToAction("NoMenu", "diners", new { id = restaurantId });
             }
             
+        }
+        [HttpGet]
+        public async Task<IActionResult> NoMenu(int? id)
+        {
+            var potentialMatch = await _repo.PotentialMatch.FindPotentialMatchByRestaurantId(id);
+            return View(potentialMatch);
         }
 
         public async Task<IActionResult> ChooseAWhatsSupp()
